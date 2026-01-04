@@ -6,7 +6,11 @@
     "myValue": 0,
     "status": "Green",
     "yellowDate": null,
-    "weight": 7.5
+    "weight": 7.5,
+    "rank": 1,
+    "gap": 177.4,
+    "marketCap": "4597.9B",
+    "competitor": "2. TSM"
   },
   {
     "group": "Agg",
@@ -15,7 +19,11 @@
     "myValue": 0,
     "status": "Green",
     "yellowDate": null,
-    "weight": 7.5
+    "weight": 7.5,
+    "rank": 3,
+    "gap": 353.0,
+    "marketCap": "1648.2B",
+    "competitor": "4. AMD"
   },
   {
     "group": "Agg",
@@ -24,7 +32,11 @@
     "myValue": 0,
     "status": "Green",
     "yellowDate": null,
-    "weight": 7.5
+    "weight": 7.5,
+    "rank": 3,
+    "gap": 65.7,
+    "marketCap": "400.1B",
+    "competitor": "4. CRM"
   },
   {
     "group": "Agg",
@@ -33,7 +45,11 @@
     "myValue": 0,
     "status": "Green",
     "yellowDate": null,
-    "weight": 7.5
+    "weight": 7.5,
+    "rank": 1,
+    "gap": 413.1,
+    "marketCap": "1456.9B",
+    "competitor": "2. TM"
   },
   {
     "group": "Bal",
@@ -42,7 +58,11 @@
     "myValue": 0,
     "status": "Green",
     "yellowDate": null,
-    "weight": 17.5
+    "weight": 17.5,
+    "rank": 1,
+    "gap": 551.6,
+    "marketCap": "2421.3B",
+    "competitor": "2. BABA"
   },
   {
     "group": "Bal",
@@ -51,7 +71,11 @@
     "myValue": 0,
     "status": "Green",
     "yellowDate": null,
-    "weight": 17.5
+    "weight": 17.5,
+    "rank": 1,
+    "gap": 132.8,
+    "marketCap": "3817.1B",
+    "competitor": "2. META"
   },
   {
     "group": "Bal",
@@ -60,7 +84,11 @@
     "myValue": 0,
     "status": "Green",
     "yellowDate": null,
-    "weight": 17.5
+    "weight": 17.5,
+    "rank": 1,
+    "gap": 525.2,
+    "marketCap": "3515.4B",
+    "competitor": "2. ORCL"
   },
   {
     "group": "Bal",
@@ -69,6 +97,10 @@
     "myValue": 0,
     "status": "Green",
     "yellowDate": null,
-    "weight": 17.5
+    "weight": 17.5,
+    "rank": 1,
+    "gap": 2506.0,
+    "marketCap": "4021.9B",
+    "competitor": "2. SONY"
   }
 ]
