@@ -1,0 +1,74 @@
+[
+  {
+    "group": "Agg",
+    "ticker": "NVDA",
+    "sector": "Semiconductors",
+    "myValue": 0,
+    "status": "Green",
+    "yellowDate": null,
+    "weight": 7.5
+  },
+  {
+    "group": "Agg",
+    "ticker": "AVGO",
+    "sector": "Semiconductors",
+    "myValue": 0,
+    "status": "Green",
+    "yellowDate": null,
+    "weight": 7.5
+  },
+  {
+    "group": "Agg",
+    "ticker": "PLTR",
+    "sector": "Software-Infrastructure",
+    "myValue": 0,
+    "status": "Green",
+    "yellowDate": null,
+    "weight": 7.5
+  },
+  {
+    "group": "Agg",
+    "ticker": "TSLA",
+    "sector": "Auto Manufacturers",
+    "myValue": 0,
+    "status": "Green",
+    "yellowDate": null,
+    "weight": 7.5
+  },
+  {
+    "group": "Bal",
+    "ticker": "AMZN",
+    "sector": "Internet Retail",
+    "myValue": 0,
+    "status": "Green",
+    "yellowDate": null,
+    "weight": 17.5
+  },
+  {
+    "group": "Bal",
+    "ticker": "GOOGL",
+    "sector": "Internet Content",
+    "myValue": 0,
+    "status": "Green",
+    "yellowDate": null,
+    "weight": 17.5
+  },
+  {
+    "group": "Bal",
+    "ticker": "MSFT",
+    "sector": "Software-Infrastructure",
+    "myValue": 0,
+    "status": "Green",
+    "yellowDate": null,
+    "weight": 17.5
+  },
+  {
+    "group": "Bal",
+    "ticker": "AAPL",
+    "sector": "Consumer Electronics",
+    "myValue": 0,
+    "status": "Green",
+    "yellowDate": null,
+    "weight": 17.5
+  }
+]
