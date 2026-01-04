@@ -2,60 +2,81 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>15 Titans: Monitor & Allocation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>15 Titans Mobile</title>
     <style>
         :root {
             /* Dark Mode Color Palette */
-            --bg-color: #1e1e1e;
-            --container-bg: #2d2d2d;
-            --text-color: #ecf0f1;
-            --input-bg: #383838;
-            --input-border: #555;
+            --bg-color: #121212;
+            --container-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --input-bg: #2c2c2c;
+            --input-border: #444;
             
-            /* 7-Category Risk Colors */
-            --agg-color: #ff6b6b;      
-            --bal-agg-color: #ff9f43;  
-            --bal-color: #feca57;      
-            --bal-def-color: #54a0ff;  
-            --def-color: #1dd1a1;      
-            --crypto-color: #a55eea;   
-            --cash-color: #c8d6e5;     
+            /* Risk Colors */
+            --agg-color: #ff5252;      
+            --bal-agg-color: #ff9800;  
+            --bal-color: #ffeb3b;      
+            --bal-def-color: #2196f3;  
+            --def-color: #4caf50;      
+            --crypto-color: #9c27b0;   
+            --cash-color: #b0bec5;     
         }
+
+        * { box-sizing: border-box; }
 
         body { 
-            font-family: 'Segoe UI', sans-serif; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color); 
             color: var(--text-color);
-            padding: 10px; 
             margin: 0;
+            padding: 8px;
+            font-size: 14px; /* 기본 폰트 키움 */
         }
-        .container { 
-            max-width: 100%; 
-            margin: 0 auto; 
-            background: var(--container-bg); 
-            padding: 15px; 
-            border-radius: 15px; 
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3); 
-        }
-        h1 { text-align: center; color: #ecf0f1; font-weight: 800; margin-bottom: 20px; font-size: 1.5em; }
 
-        /* --- Config Panel --- */
-        .config-panel {
-            background-color: #353b48; border: 1px solid #444; padding: 10px;
-            border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 5px;
+        .container { 
+            width: 100%; 
+            background: var(--container-bg); 
+            padding: 10px; 
+            border-radius: 12px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5); 
         }
-        .config-item { text-align: center; width: 45px; margin-bottom: 5px; }
-        .config-label { font-size: 0.6em; font-weight: bold; margin-bottom: 2px; display: block; white-space: nowrap; }
-        .config-dynamic { font-size: 0.6em; color: #b2bec3; font-weight: 600; display: block; margin-top: 2px; }
+
+        h1 { 
+            text-align: center; 
+            color: #ffffff; 
+            font-weight: 700; 
+            margin: 10px 0 20px 0; 
+            font-size: 1.4rem; 
+        }
+
+        /* --- Config Panel (Grid Layout) --- */
+        .config-panel {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 한 줄에 4개씩 */
+            gap: 8px;
+            background-color: #252525;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .config-item { text-align: center; }
+        .config-label { font-size: 0.75rem; font-weight: bold; display: block; margin-bottom: 2px; }
+        .config-dynamic { font-size: 0.7rem; color: #90a4ae; display: block; margin-top: 2px; }
         
         .alloc-input {
-            width: 100%; padding: 2px; text-align: center; 
-            background-color: var(--input-bg); border: 1px solid var(--input-border); color: white;
-            border-radius: 4px; font-weight: bold; font-size: 0.9em;
+            width: 100%; 
+            padding: 6px 0; 
+            text-align: center; 
+            background-color: var(--input-bg); 
+            border: 1px solid var(--input-border); 
+            color: white;
+            border-radius: 6px; 
+            font-weight: bold; 
+            font-size: 1rem; /* 터치하기 좋게 큼직하게 */
         }
 
-        /* Color mappings */
+        /* Color classes */
         .c-agg { color: var(--agg-color); }
         .c-bal-agg { color: var(--bal-agg-color); }
         .c-bal { color: var(--bal-color); }
@@ -63,67 +84,127 @@
         .c-def { color: var(--def-color); }
         .c-cry { color: var(--crypto-color); }
         .c-cash { color: var(--cash-color); }
-        .text-danger { color: #ff6b6b !important; font-weight: 800; }
+        .text-danger { color: #ff5252 !important; font-weight: 800; }
 
         /* --- Deposit Section --- */
         .deposit-area {
-            display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 15px;
-            background: #353b48; padding: 10px; border-radius: 10px;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: #252525; 
+            padding: 12px; 
+            border-radius: 10px;
+            margin-bottom: 15px;
         }
-        .deposit-area label { font-weight: bold; color: #dfe6e9; font-size: 0.9em; }
+        .deposit-area label { font-size: 1rem; font-weight: bold; }
         .deposit-area input {
-            padding: 8px; width: 120px; text-align: right; font-size: 1.1em; 
-            background: var(--input-bg); border: 1px solid var(--input-border); color: #ffeaa7; border-radius: 5px;
+            width: 140px; 
+            padding: 8px; 
+            text-align: right; 
+            font-size: 1.2rem; 
+            background: var(--input-bg); 
+            border: 1px solid var(--input-border); 
+            color: #ffd54f; 
+            border-radius: 6px;
         }
 
-        /* --- Table Styling (Mobile Optimized) --- */
-        .table-wrapper { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.8em; margin-top: 5px; min-width: 600px; }
-        thead tr { background-color: #2c3e50; color: #dfe6e9; text-align: center; }
-        th, td { padding: 8px 4px; border-bottom: 1px solid #444; text-align: center; vertical-align: middle; }
-        
-        input[type="text"], input[type="number"], select { 
-            padding: 4px; background: var(--input-bg); border: 1px solid var(--input-border); 
-            color: #ecf0f1; border-radius: 4px; text-align: center; font-weight: 600; width: 90%;
+        /* --- Table Styling (Scrollable) --- */
+        .table-wrapper { 
+            overflow-x: auto; 
+            -webkit-overflow-scrolling: touch; 
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #333;
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            min-width: 600px; /* 가로 스크롤 발생 최소 너비 */
+        }
+        thead tr { background-color: #333; color: #eee; }
+        th, td { 
+            padding: 10px 5px; 
+            border-bottom: 1px solid #333; 
+            text-align: center; 
+            vertical-align: middle;
+            font-size: 0.95rem; /* 폰트 키움 */
         }
         
-        .status-badge { padding: 3px 6px; border-radius: 10px; color: white; font-weight: bold; font-size: 0.7em; display: inline-block; }
-        .bg-green { background-color: #27ae60; }
-        .bg-yellow { background-color: #f1c40f; color: #2d3436; }
-        .bg-red { background-color: #e74c3c; animation: blink 1.5s infinite; }
-        @keyframes blink { 50% { opacity: 0.6; } }
-
-        .buy-amt { color: #ff7675; font-weight: 800; font-size: 1.1em; }
-        .rank-txt { font-weight: bold; font-size: 1.2em; }
-
-        /* Action Buttons */
-        .btn-area { display: flex; justify-content: center; gap: 10px; margin-top: 20px; padding: 10px; background: #353b48; border-radius: 10px;}
-        button { padding: 10px 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; color: white; font-size: 0.9em; }
+        /* Input inside table */
+        td input[type="number"], td input[type="text"] {
+            width: 90%;
+            padding: 6px;
+            background: #2c2c2c;
+            border: 1px solid #444;
+            border-radius: 4px;
+            color: white;
+            text-align: center;
+            font-size: 1rem; /* 터치 편하게 */
+        }
         
-        .btn-refresh { background-color: #3498db; }
-        .btn-calc { background-color: #9b59b6; }
+        .status-badge { 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            color: white; 
+            font-weight: bold; 
+            font-size: 0.8rem; 
+            white-space: nowrap;
+        }
+        .bg-green { background-color: #388e3c; }
+        .bg-yellow { background-color: #fbc02d; color: #212121; }
+        .bg-red { background-color: #d32f2f; }
+
+        .buy-amt { color: #ff8a80; font-weight: bold; font-size: 1rem; }
+        .rank-txt { font-weight: bold; font-size: 1.1rem; }
+
+        /* Action Buttons (Fixed Bottom or Area) */
+        .btn-area { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 10px; 
+        }
+        button { 
+            padding: 12px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 1rem; 
+            font-weight: bold; 
+            color: white; 
+            cursor: pointer;
+        }
+        .btn-calc { background-color: #7b1fa2; }
+        .btn-refresh { background-color: #1976d2; }
         
-        .footer-note { margin-top: 20px; font-size: 0.7em; color: #7f8c8d; text-align: center; }
+        .footer-note { 
+            margin-top: 15px; 
+            font-size: 0.75rem; 
+            color: #757575; 
+            text-align: center; 
+            line-height: 1.4;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>📡 15 Titans Dashboard</h1>
+    <h1>📱 15 Titans</h1>
 
     <div class="config-panel">
-        <div class="config-item"><label class="config-label c-agg">Agg</label><input type="number" id="targetAgg" class="alloc-input" value="30" oninput="distributeWeights()"><span class="config-dynamic" id="realAgg">0%</span></div>
-        <div class="config-item"><label class="config-label c-bal-agg">BalAgg</label><input type="number" id="targetBalAgg" class="alloc-input" value="20" oninput="distributeWeights()"><span class="config-dynamic" id="realBalAgg">0%</span></div>
-        <div class="config-item"><label class="config-label c-bal">Bal</label><input type="number" id="targetBal" class="alloc-input" value="15" oninput="distributeWeights()"><span class="config-dynamic" id="realBal">0%</span></div>
-        <div class="config-item"><label class="config-label c-bal-def">BalDef</label><input type="number" id="targetBalDef" class="alloc-input" value="10" oninput="distributeWeights()"><span class="config-dynamic" id="realBalDef">0%</span></div>
-        <div class="config-item"><label class="config-label c-def">Def</label><input type="number" id="targetDef" class="alloc-input" value="10" oninput="distributeWeights()"><span class="config-dynamic" id="realDef">0%</span></div>
-        <div class="config-item"><label class="config-label c-cry">Cry</label><input type="number" id="targetCry" class="alloc-input" value="10" oninput="distributeWeights()"><span class="config-dynamic" id="realCry">0%</span></div>
-        <div class="config-item"><label class="config-label c-cash">Cash</label><input type="number" id="targetCash" class="alloc-input" value="5" oninput="distributeWeights()"><span class="config-dynamic" id="realCash">0%</span></div>
-        <div class="config-item"><label class="config-label" style="color:#bdc3c7">Sum</label><span id="targetSumCheck" style="font-size:1em; font-weight:bold; color:#2ecc71; display:block; margin-top:5px;">100%</span></div>
+        <div class="config-item"><span class="config-label c-agg">Agg</span><input type="number" id="targetAgg" class="alloc-input" value="30" oninput="distributeWeights()"><span class="config-dynamic" id="realAgg">0%</span></div>
+        <div class="config-item"><span class="config-label c-bal-agg">BalAgg</span><input type="number" id="targetBalAgg" class="alloc-input" value="20" oninput="distributeWeights()"><span class="config-dynamic" id="realBalAgg">0%</span></div>
+        <div class="config-item"><span class="config-label c-bal">Bal</span><input type="number" id="targetBal" class="alloc-input" value="15" oninput="distributeWeights()"><span class="config-dynamic" id="realBal">0%</span></div>
+        <div class="config-item"><span class="config-label c-bal-def">BalDef</span><input type="number" id="targetBalDef" class="alloc-input" value="10" oninput="distributeWeights()"><span class="config-dynamic" id="realBalDef">0%</span></div>
+        <div class="config-item"><span class="config-label c-def">Def</span><input type="number" id="targetDef" class="alloc-input" value="10" oninput="distributeWeights()"><span class="config-dynamic" id="realDef">0%</span></div>
+        <div class="config-item"><span class="config-label c-cry">Cry</span><input type="number" id="targetCry" class="alloc-input" value="10" oninput="distributeWeights()"><span class="config-dynamic" id="realCry">0%</span></div>
+        <div class="config-item"><span class="config-label c-cash">Cash</span><input type="number" id="targetCash" class="alloc-input" value="5" oninput="distributeWeights()"><span class="config-dynamic" id="realCash">0%</span></div>
+        <div class="config-item">
+            <span class="config-label" style="color:#aaa">Total</span>
+            <div id="targetSumCheck" style="font-size:1.1rem; font-weight:bold; color:#4caf50; padding-top:6px;">100%</div>
+        </div>
     </div>
 
     <div class="deposit-area">
-        <label>💰 Total ($):</label>
+        <label>💰 Total Asset</label>
         <input type="number" id="totalInvest" value="10000" oninput="checkRealAllocations()">
     </div>
 
@@ -131,15 +212,15 @@
         <table>
             <thead>
                 <tr>
-                    <th width="8%">Group</th>
-                    <th width="8%">Ticker</th>
-                    <th width="15%">Competitor</th>
-                    <th width="5%">Rk</th>
-                    <th width="7%">Gap%</th>
-                    <th width="10%">Status</th>
-                    <th width="8%" style="background:#2c3e50; color:#bdc3c7;">Wgt%</th>
-                    <th width="12%" style="background:#2c3e50; color:#bdc3c7;">Buy($)</th>
-                    <th width="10%">My Val</th>
+                    <th width="10%">Grp</th>
+                    <th width="12%">Ticker</th>
+                    <th width="12%">Comp</th>
+                    <th width="8%">Rk</th>
+                    <th width="10%">Gap</th>
+                    <th width="12%">Stat</th>
+                    <th width="10%" style="background:#2c2c2c; color:#aaa;">Wgt%</th>
+                    <th width="14%" style="background:#2c2c2c; color:#aaa;">Buy($)</th>
+                    <th width="12%">MyVal</th>
                 </tr>
             </thead>
             <tbody id="tableBody"></tbody>
@@ -147,35 +228,36 @@
     </div>
 
     <div class="btn-area">
-        <button class="btn-calc" onclick="distributeWeights()">⚖️ Auto-Balance</button>
+        <button class="btn-calc" onclick="distributeWeights()">⚖️ Balance</button>
         <button class="btn-refresh" onclick="location.reload()">🔄 Refresh</button>
     </div>
     
     <div class="footer-note">
-        Data is updated daily via GitHub Actions.<br>
-        To add tickers, edit 'portfolio.json' in GitHub.
+        Updated via GitHub Actions.<br>
+        Edit 'portfolio.json' to add tickers.
     </div>
 </div>
 
 <script>
     let portfolioData = [];
+    // Category mapping for coloring
     const CATEGORIES = ['Agg', 'Bal-Agg', 'Bal', 'Bal-Def', 'Def', 'Crypto', 'Cash'];
 
     async function loadData() {
-        // 캐싱 방지: URL 뒤에 타임스탬프 추가
         try {
+            // Anti-caching timestamp
             const res = await fetch('portfolio.json?t=' + new Date().getTime());
             if (!res.ok) throw new Error("Network response was not ok");
             portfolioData = await res.json();
             
-            // 로컬 스토리지에서 'My Value'와 'Settings' 불러오기
+            // Restore Settings & Values from LocalStorage
             loadLocalSettings();
             
             renderTable();
             checkRealAllocations();
         } catch (e) {
             console.error("Failed to load data", e);
-            document.querySelector('.container').innerHTML += `<p style="color:red; text-align:center;">Failed to load portfolio.json. Check GitHub Actions.</p>`;
+            document.querySelector('.container').innerHTML += `<p style="color:#ff5252; text-align:center;">Failed to load data.<br>Run GitHub Action first.</p>`;
         }
     }
 
@@ -187,18 +269,27 @@
         portfolioData.forEach((item, index) => {
             const row = document.createElement('tr');
             
+            // Status Badge Logic
             let badgeClass = 'bg-green';
             if(item.status === 'Yellow') badgeClass = 'bg-yellow';
             if(item.status === 'Red') badgeClass = 'bg-red';
 
-            const gapStr = item.gap ? `${item.gap}%` : '-';
-            const competitor = item.competitor ? item.competitor.split('.')[1] || item.competitor : '-'; // 이름만 짧게
-            
-            let rankColor = '#bdc3c7'; 
-            if (item.rank > 3) rankColor = '#e74c3c';
+            // Competitor Name Shortening (e.g., "2. AVGO" -> "AVGO")
+            let compName = '-';
+            if (item.competitor && item.competitor !== 'None') {
+                const parts = item.competitor.split('.'); 
+                compName = parts.length > 1 ? parts[1].trim() : item.competitor;
+            }
 
-            // Group Color Logic
-            let groupColor = '#ecf0f1';
+            // Gap Formatting
+            const gapStr = item.gap ? `${item.gap}%` : '-';
+            
+            // Rank Color
+            let rankColor = '#aaa'; 
+            if (item.rank > 3) rankColor = '#ff5252';
+
+            // Group Color
+            let groupColor = '#eee';
             const g = (item.group || 'Agg'); 
             if(g === 'Agg') groupColor = 'var(--agg-color)';
             else if(g === 'Bal-Agg') groupColor = 'var(--bal-agg-color)';
@@ -212,34 +303,37 @@
             const toBuy = totalMoney * (wgt / 100);
 
             row.innerHTML = `
-                <td style="color:${groupColor}; font-weight:bold;">${item.group}</td>
+                <td style="color:${groupColor}; font-weight:bold; font-size:0.9rem;">${g.substring(0,3)}</td>
                 <td style="font-weight:bold;">${item.ticker}</td>
-                <td style="color:#95a5a6; font-size:0.9em;">${competitor}</td>
+                <td style="color:#90a4ae; font-size:0.85rem;">${compName}</td>
                 <td class="rank-txt" style="color:${rankColor};">${item.rank || '-'}</td>
-                <td style="color:${item.gap < 10 && item.gap > 0 ? '#ff7675' : '#55efc4'}">${gapStr}</td>
-                <td><span class="status-badge ${badgeClass}">${item.status}</span></td>
-                <td><input type="number" step="0.1" style="color:#74b9ff;" value="${wgt.toFixed(1)}" onchange="updateWeight(${index}, this.value)"></td>
-                <td class="buy-amt">$${toBuy.toLocaleString(undefined, {maximumFractionDigits: 0})}</td>
+                <td style="color:${item.gap < 10 && item.gap > 0 ? '#ff8a80' : '#69f0ae'}; font-size:0.9rem;">${gapStr}</td>
+                <td><span class="status-badge ${badgeClass}">${item.status.substring(0,1)}</span></td>
+                <td><input type="number" step="0.1" style="color:#64b5f6;" value="${wgt.toFixed(1)}" onchange="updateWeight(${index}, this.value)"></td>
+                <td class="buy-amt">$${Math.round(toBuy).toLocaleString()}</td>
                 <td><input type="number" value="${item.myValue || 0}" onchange="updateMyValue(${index}, this.value)"></td>
             `;
             tbody.appendChild(row);
         });
     }
 
-    // --- Logic & Events ---
+    // --- Core Logic ---
     
     function distributeWeights() {
         const targets = getTargetSettings();
-        saveLocalSettings(); // 설정 저장
+        saveLocalSettings(); 
         updateTotalCheck(targets);
 
         const counts = { Agg:0, 'Bal-Agg':0, Bal:0, 'Bal-Def':0, Def:0, Crypto:0, Cash:0 };
+        // Count items per group
         portfolioData.forEach(item => { if(counts[item.group] !== undefined) counts[item.group]++; });
 
+        // Calculate active divisor
         let activeSum = 0;
         for (let k in counts) { if (counts[k] > 0) activeSum += targets[k]; }
         const multiplier = activeSum > 0 ? (100 / activeSum) : 0;
 
+        // Apply Weights
         portfolioData.forEach(item => {
             const g = item.group;
             if (counts[g] > 0) {
@@ -256,13 +350,13 @@
 
     function updateWeight(index, val) {
         portfolioData[index].weight = parseFloat(val) || 0;
-        renderTable(); // Re-render to update amounts
+        renderTable();
         checkRealAllocations();
     }
 
     function updateMyValue(index, val) {
         portfolioData[index].myValue = parseFloat(val) || 0;
-        saveLocalSettings(); // 값 변경 시 로컬 저장
+        saveLocalSettings();
     }
 
     function checkRealAllocations() {
@@ -275,12 +369,13 @@
             }
         });
 
-        // Header Update
+        // Update Config Panel Real%
         for(let k in sums) {
-            const elId = 'real' + k.replace('-', ''); // Bal-Agg -> realBalAgg
+            const elId = 'real' + k.replace('-', '');
             const el = document.getElementById(elId);
             if(el) {
                 el.innerText = sums[k].toFixed(1) + '%';
+                // Tolerance 0.1%
                 if (sums[k] > targets[k] + 0.1) el.classList.add('text-danger');
                 else el.classList.remove('text-danger');
             }
@@ -304,41 +399,43 @@
         for (let k in targets) sum += targets[k];
         const checkEl = document.getElementById('targetSumCheck');
         checkEl.innerText = sum + '%';
-        checkEl.style.color = sum === 100 ? '#2ecc71' : '#e74c3c';
+        checkEl.style.color = Math.abs(sum - 100) < 0.1 ? '#4caf50' : '#ff5252';
     }
 
-    // --- Local Storage (Phone Persistence) ---
+    // --- Persistence (LocalStorage) ---
     function saveLocalSettings() {
         const settings = getTargetSettings();
+        // Save only My Value entries
         const myValues = portfolioData.map(p => ({ t: p.ticker, v: p.myValue }));
         const totalInv = document.getElementById('totalInvest').value;
         
-        localStorage.setItem('titans_settings', JSON.stringify(settings));
-        localStorage.setItem('titans_values', JSON.stringify(myValues));
-        localStorage.setItem('titans_total', totalInv);
+        localStorage.setItem('titans_settings_mobile', JSON.stringify(settings));
+        localStorage.setItem('titans_values_mobile', JSON.stringify(myValues));
+        localStorage.setItem('titans_total_mobile', totalInv);
     }
 
     function loadLocalSettings() {
-        const savedSettings = localStorage.getItem('titans_settings');
-        const savedValues = localStorage.getItem('titans_values');
-        const savedTotal = localStorage.getItem('titans_total');
+        const savedSettings = localStorage.getItem('titans_settings_mobile');
+        const savedValues = localStorage.getItem('titans_values_mobile');
+        const savedTotal = localStorage.getItem('titans_total_mobile');
 
         if(savedTotal) document.getElementById('totalInvest').value = savedTotal;
 
         if (savedSettings) {
             const s = JSON.parse(savedSettings);
-            document.getElementById('targetAgg').value = s.Agg;
-            document.getElementById('targetBalAgg').value = s['Bal-Agg'];
-            document.getElementById('targetBal').value = s.Bal;
-            document.getElementById('targetBalDef').value = s['Bal-Def'];
-            document.getElementById('targetDef').value = s.Def;
-            document.getElementById('targetCry').value = s.Crypto;
-            document.getElementById('targetCash').value = s.Cash;
+            if(document.getElementById('targetAgg')) {
+                document.getElementById('targetAgg').value = s.Agg;
+                document.getElementById('targetBalAgg').value = s['Bal-Agg'];
+                document.getElementById('targetBal').value = s.Bal;
+                document.getElementById('targetBalDef').value = s['Bal-Def'];
+                document.getElementById('targetDef').value = s.Def;
+                document.getElementById('targetCry').value = s.Crypto;
+                document.getElementById('targetCash').value = s.Cash;
+            }
         }
 
         if (savedValues) {
             const vals = JSON.parse(savedValues);
-            // 매칭되는 티커의 myValue 복원
             portfolioData.forEach(p => {
                 const found = vals.find(v => v.t === p.ticker);
                 if(found) p.myValue = found.v;
@@ -346,7 +443,7 @@
         }
     }
 
-    // 초기 실행
+    // Init
     loadData();
 </script>
 
