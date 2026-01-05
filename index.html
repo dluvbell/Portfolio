@@ -32,7 +32,7 @@
             color: var(--text-color);
             margin: 0;
             padding: 8px;
-            font-size: 14px; /* 기본 폰트 키움 */
+            font-size: 14px; 
         }
 
         .container { 
@@ -52,10 +52,10 @@
             font-size: 1.4rem; 
         }
 
-        /* --- Config Panel (Grid Layout) --- */
+        /* --- Config Panel --- */
         .config-panel {
             display: grid;
-            grid-template-columns: repeat(4, 1fr); /* 한 줄에 4개씩 */
+            grid-template-columns: repeat(4, 1fr); 
             gap: 8px;
             background-color: #252525;
             padding: 10px;
@@ -75,7 +75,7 @@
             color: white;
             border-radius: 6px; 
             font-weight: bold; 
-            font-size: 1rem; /* 터치하기 좋게 큼직하게 */
+            font-size: 1rem; 
         }
 
         /* Color classes */
@@ -121,7 +121,7 @@
         table { 
             width: 100%; 
             border-collapse: collapse; 
-            min-width: 650px; /* 가로 스크롤 발생 최소 너비 증가 */
+            min-width: 800px; /* 컬럼이 많아져서 최소 너비 증가 */
         }
         thead tr { background-color: #333; color: #eee; }
         th, td { 
@@ -129,7 +129,7 @@
             border-bottom: 1px solid #333; 
             text-align: center; 
             vertical-align: middle;
-            font-size: 0.95rem; /* 폰트 키움 */
+            font-size: 0.9rem;
         }
         
         /* Input inside table */
@@ -141,7 +141,7 @@
             border-radius: 4px;
             color: white;
             text-align: center;
-            font-size: 1rem; /* 터치 편하게 */
+            font-size: 1rem; 
         }
         
         .status-badge { 
@@ -177,7 +177,7 @@
             cursor: pointer;
         }
         .btn-calc { background-color: #7b1fa2; }
-        .btn-invest { background-color: #00897b; } /* Teal */
+        .btn-invest { background-color: #00897b; }
         .btn-refresh { background-color: #1976d2; }
         
         /* Chart Section */
@@ -234,13 +234,14 @@
         <table>
             <thead>
                 <tr>
-                    <th width="10%">Grp</th>
-                    <th width="12%">Ticker</th>
-                    <th width="12%">Stat</th>
+                    <th width="8%">Grp</th>
+                    <th width="10%">Ticker</th>
+                    <th width="12%">Comp</th> <th width="8%">Rk</th>    <th width="10%">Gap</th>   <th width="8%">Stat</th>
                     <th width="10%" style="background:#2c2c2c; color:#aaa;">Wgt%</th>
                     <th width="14%" style="background:#2c2c2c; color:#aaa;">Buy($)</th>
-                    <th width="12%">MyVal</th>
-                    <th width="14%">Acc($)</th> </tr>
+                    <th width="10%">MyVal</th>
+                    <th width="12%">Acc($)</th>
+                </tr>
             </thead>
             <tbody id="tableBody"></tbody>
         </table>
@@ -260,13 +261,13 @@
     <div class="footer-note">
         Updated via GitHub Actions.<br>
         'Invest' adds MyVal to Acc & clears MyVal.<br>
-        Data saved to your device only.
+        Edit 'portfolio.json' to change Tickers.
     </div>
 </div>
 
 <script>
     let portfolioData = [];
-    let myChart = null; // Chart instance
+    let myChart = null; 
 
     // Color definitions for Chart
     const COLOR_MAP = {
@@ -286,7 +287,6 @@
             if (!res.ok) throw new Error("Network response was not ok");
             portfolioData = await res.json();
             
-            // Restore Settings & Values from LocalStorage
             loadLocalSettings();
             
             renderTable();
@@ -306,7 +306,7 @@
         portfolioData.forEach((item, index) => {
             const row = document.createElement('tr');
             
-            // Status Badge Logic
+            // Status Badge
             let badgeClass = 'bg-green';
             if(item.status === 'Yellow') badgeClass = 'bg-yellow';
             if(item.status === 'Red') badgeClass = 'bg-red';
@@ -325,12 +325,29 @@
             const wgt = parseFloat(item.weight) || 0;
             const toBuy = totalMoney * (wgt / 100);
             
-            // Accumulated Value (default 0)
+            // Accumulated Value
             const accVal = item.invested || 0;
 
+            // Competitor Name (e.g., "2. AVGO" -> "AVGO")
+            let compName = '-';
+            if (item.competitor && item.competitor !== 'None') {
+                const parts = item.competitor.split('.'); 
+                compName = parts.length > 1 ? parts[1].trim() : item.competitor;
+            }
+
+            // Gap Formatting
+            const gapStr = item.gap ? `${item.gap}%` : '-';
+            
+            // Rank Color
+            let rankColor = '#aaa'; 
+            if (item.rank > 3) rankColor = '#ff5252';
+
             row.innerHTML = `
-                <td style="color:${groupColor}; font-weight:bold; font-size:0.9rem;">${g.substring(0,3)}</td>
+                <td style="color:${groupColor}; font-weight:bold; font-size:0.8rem;">${g.substring(0,3)}</td>
                 <td style="font-weight:bold;">${item.ticker}</td>
+                <td style="color:#90a4ae; font-size:0.85rem;">${compName}</td>
+                <td class="rank-txt" style="color:${rankColor};">${item.rank || '-'}</td>
+                <td style="color:${item.gap < 10 && item.gap > 0 ? '#ff8a80' : '#69f0ae'}; font-size:0.9rem;">${gapStr}</td>
                 <td><span class="status-badge ${badgeClass}">${item.status.substring(0,1)}</span></td>
                 <td><input type="number" step="0.1" style="color:#64b5f6;" value="${wgt.toFixed(1)}" onchange="updateWeight(${index}, this.value)"></td>
                 <td class="buy-amt">$${Math.round(toBuy).toLocaleString()}</td>
@@ -369,7 +386,7 @@
         checkRealAllocations();
     }
 
-    // New: Commit 'MyValue' to 'Invested'
+    // Commit 'MyValue' to 'Invested'
     function commitInvest() {
         if(!confirm("Add all 'MyVal' amounts to Accumulated Total?")) return;
 
@@ -377,9 +394,7 @@
         portfolioData.forEach(item => {
             const currentInput = parseFloat(item.myValue) || 0;
             if (currentInput > 0) {
-                // Accumulate
                 item.invested = (item.invested || 0) + currentInput;
-                // Reset Input
                 item.myValue = 0;
                 addedTotal += currentInput;
             }
@@ -388,24 +403,22 @@
         if (addedTotal > 0) {
             saveLocalSettings();
             renderTable();
-            renderChart(); // Refresh Chart
+            renderChart(); 
             alert(`$${addedTotal.toLocaleString()} added to accumulation.`);
         } else {
             alert("No 'MyVal' amounts to invest.");
         }
     }
 
-    // New: Render Pie Chart
+    // Render Pie Chart
     function renderChart() {
         const ctx = document.getElementById('portfolioChart').getContext('2d');
         
-        // Prepare Data
         const labels = [];
         const dataPoints = [];
         const backgroundColors = [];
         let totalAcc = 0;
 
-        // Sort by value for better visual
         const sortedData = [...portfolioData].sort((a, b) => (b.invested || 0) - (a.invested || 0));
 
         sortedData.forEach(item => {
@@ -418,13 +431,9 @@
             }
         });
 
-        // Destroy old chart if exists
         if (myChart) myChart.destroy();
 
-        if (totalAcc === 0) {
-            // Empty State
-            return; 
-        }
+        if (totalAcc === 0) return; 
 
         myChart = new Chart(ctx, {
             type: 'doughnut',
@@ -467,8 +476,6 @@
 
     function updateMyValue(index, val) {
         portfolioData[index].myValue = parseFloat(val) || 0;
-        // Don't save full setting here, wait for manual save or implicit logic
-        // But for consistency we save inputs to prevent loss on reload
         saveLocalSettings();
     }
 
@@ -513,14 +520,12 @@
         checkEl.style.color = Math.abs(sum - 100) < 0.1 ? '#4caf50' : '#ff5252';
     }
 
-    // --- Persistence (LocalStorage) ---
     function saveLocalSettings() {
         const settings = getTargetSettings();
-        // Save My Value AND Invested Amount
         const savedData = portfolioData.map(p => ({ 
             t: p.ticker, 
-            v: p.myValue,       // Current Input
-            i: p.invested || 0  // Accumulated Amount
+            v: p.myValue,       
+            i: p.invested || 0  
         }));
         const totalInv = document.getElementById('totalInvest').value;
         
@@ -555,14 +560,12 @@
                 const found = vals.find(v => v.t === p.ticker);
                 if(found) {
                     p.myValue = found.v;
-                    // Load Invested amount (compatible with old version if 'i' missing)
                     p.invested = found.i || 0; 
                 }
             });
         }
     }
 
-    // Init
     loadData();
 </script>
 
