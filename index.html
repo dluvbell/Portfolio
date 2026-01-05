@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>15 Titans Mobile</title>
+    <title>15 Titans Mobile Pro</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -31,51 +31,51 @@
             background-color: var(--bg-color); 
             color: var(--text-color);
             margin: 0;
-            padding: 8px;
-            font-size: 14px; 
+            padding: 5px;
+            font-size: 13px; /* 모바일 가독성 최적화 */
         }
 
         .container { 
             width: 100%; 
+            max-width: 100%;
             background: var(--container-bg); 
             padding: 10px; 
             border-radius: 12px; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.5); 
-            padding-bottom: 30px;
+            padding-bottom: 50px;
         }
 
         h1 { 
             text-align: center; 
             color: #ffffff; 
             font-weight: 700; 
-            margin: 10px 0 20px 0; 
-            font-size: 1.4rem; 
+            margin: 10px 0 15px 0; 
+            font-size: 1.3rem; 
         }
 
         /* --- Config Panel --- */
         .config-panel {
             display: grid;
             grid-template-columns: repeat(4, 1fr); 
-            gap: 8px;
+            gap: 6px;
             background-color: #252525;
-            padding: 10px;
+            padding: 8px;
             border-radius: 10px;
             margin-bottom: 15px;
         }
         .config-item { text-align: center; }
-        .config-label { font-size: 0.75rem; font-weight: bold; display: block; margin-bottom: 2px; }
-        .config-dynamic { font-size: 0.7rem; color: #90a4ae; display: block; margin-top: 2px; }
+        .config-label { font-size: 0.7rem; font-weight: bold; display: block; margin-bottom: 2px; }
+        .config-dynamic { font-size: 0.65rem; color: #90a4ae; display: block; margin-top: 2px; }
         
         .alloc-input {
             width: 100%; 
-            padding: 6px 0; 
+            padding: 4px 0; 
             text-align: center; 
             background-color: var(--input-bg); 
             border: 1px solid var(--input-border); 
             color: white;
             border-radius: 6px; 
             font-weight: bold; 
-            font-size: 1rem; 
+            font-size: 0.9rem; 
         }
 
         /* Color classes */
@@ -94,122 +94,110 @@
             justify-content: space-between; 
             align-items: center; 
             background: #252525; 
-            padding: 12px; 
+            padding: 10px; 
             border-radius: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
-        .deposit-area label { font-size: 1rem; font-weight: bold; }
+        .deposit-area label { font-size: 0.9rem; font-weight: bold; }
         .deposit-area input {
-            width: 140px; 
+            width: 120px; 
             padding: 8px; 
             text-align: right; 
-            font-size: 1.2rem; 
+            font-size: 1.1rem; 
             background: var(--input-bg); 
             border: 1px solid var(--input-border); 
             color: #ffd54f; 
             border-radius: 6px;
         }
 
-        /* --- Table Styling (Scrollable) --- */
+        /* --- Table Styling --- */
         .table-wrapper { 
             overflow-x: auto; 
             -webkit-overflow-scrolling: touch; 
             margin-bottom: 15px;
-            border-radius: 8px;
             border: 1px solid #333;
+            border-radius: 8px;
         }
         table { 
             width: 100%; 
             border-collapse: collapse; 
-            min-width: 800px; /* 컬럼이 많아져서 최소 너비 증가 */
+            min-width: 900px; /* 기능 복구로 가로 폭 넓어짐 */
         }
         thead tr { background-color: #333; color: #eee; }
         th, td { 
-            padding: 10px 5px; 
+            padding: 8px 4px; 
             border-bottom: 1px solid #333; 
             text-align: center; 
             vertical-align: middle;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
         
-        /* Input inside table */
-        td input[type="number"], td input[type="text"] {
-            width: 90%;
-            padding: 6px;
-            background: #2c2c2c;
-            border: 1px solid #444;
-            border-radius: 4px;
-            color: white;
-            text-align: center;
-            font-size: 1rem; 
+        /* Form Elements inside Table */
+        select {
+            background: #2c2c2c; color: white; border: 1px solid #444; 
+            padding: 4px; border-radius: 4px; font-size: 0.8rem; max-width: 100%;
         }
-        
-        .status-badge { 
-            padding: 4px 8px; 
-            border-radius: 4px; 
-            color: white; 
-            font-weight: bold; 
-            font-size: 0.8rem; 
-            white-space: nowrap;
+        input[type="text"], input[type="number"] {
+            background: #2c2c2c; color: white; border: 1px solid #444; 
+            padding: 4px; border-radius: 4px; text-align: center; font-size: 0.9rem; width: 90%;
         }
+
+        /* Badges & Colors */
+        .status-badge { padding: 3px 6px; border-radius: 4px; color: white; font-weight: bold; font-size: 0.7rem; white-space: nowrap;}
         .bg-green { background-color: #388e3c; }
         .bg-yellow { background-color: #fbc02d; color: #212121; }
         .bg-red { background-color: #d32f2f; }
 
-        .buy-amt { color: #ff8a80; font-weight: bold; font-size: 1rem; }
-        .rank-txt { font-weight: bold; font-size: 1.1rem; }
-        .acc-amt { color: #69f0ae; font-weight: bold; font-size: 1rem; }
+        .buy-amt { color: #ff8a80; font-weight: bold; font-size: 0.95rem; }
+        .rank-txt { font-weight: bold; font-size: 1rem; }
+        .acc-amt { color: #69f0ae; font-weight: bold; font-size: 0.95rem; }
 
         /* Action Buttons */
         .btn-area { 
             display: grid; 
-            grid-template-columns: 1fr 1fr 1fr; 
+            grid-template-columns: repeat(2, 1fr); 
             gap: 8px; 
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
+        .btn-full { grid-column: span 2; }
+
         button { 
             padding: 12px; 
             border: none; 
             border-radius: 8px; 
-            font-size: 1rem; 
+            font-size: 0.95rem; 
             font-weight: bold; 
             color: white; 
             cursor: pointer;
         }
         .btn-calc { background-color: #7b1fa2; }
-        .btn-invest { background-color: #00897b; }
-        .btn-refresh { background-color: #1976d2; }
-        
+        .btn-invest { background-color: #00897b; } 
+        .btn-add { background-color: #1976d2; }
+        .btn-refresh { background-color: #455a64; }
+
+        .btn-del { background: #d32f2f; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; }
+
         /* Chart Section */
         .chart-container {
             position: relative;
-            height: 300px;
+            height: 280px;
             width: 100%;
-            margin-top: 20px;
+            margin-top: 10px;
             background: #252525;
             border-radius: 12px;
             padding: 10px;
         }
-        .chart-title {
-            text-align: center;
-            color: #ddd;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
+        .chart-title { text-align: center; color: #ddd; font-weight: bold; margin-bottom: 5px; }
 
         .footer-note { 
-            margin-top: 15px; 
-            font-size: 0.75rem; 
-            color: #757575; 
-            text-align: center; 
-            line-height: 1.4;
+            margin-top: 15px; font-size: 0.75rem; color: #757575; text-align: center; line-height: 1.4; 
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>📱 15 Titans</h1>
+    <h1>📱 15 Titans Pro</h1>
 
     <div class="config-panel">
         <div class="config-item"><span class="config-label c-agg">Agg</span><input type="number" id="targetAgg" class="alloc-input" value="30" oninput="distributeWeights()"><span class="config-dynamic" id="realAgg">0%</span></div>
@@ -226,7 +214,7 @@
     </div>
 
     <div class="deposit-area">
-        <label>💰 Total Asset</label>
+        <label>💰 Total Asset To Alloc</label>
         <input type="number" id="totalInvest" value="10000" oninput="checkRealAllocations()">
     </div>
 
@@ -234,13 +222,18 @@
         <table>
             <thead>
                 <tr>
-                    <th width="8%">Grp</th>
+                    <th width="10%">Grp</th>
                     <th width="10%">Ticker</th>
-                    <th width="12%">Comp</th> <th width="8%">Rk</th>    <th width="10%">Gap</th>   <th width="8%">Stat</th>
-                    <th width="10%" style="background:#2c2c2c; color:#aaa;">Wgt%</th>
-                    <th width="14%" style="background:#2c2c2c; color:#aaa;">Buy($)</th>
-                    <th width="10%">MyVal</th>
-                    <th width="12%">Acc($)</th>
+                    <th width="12%">Sector</th>
+                    <th width="10%">Comp</th>
+                    <th width="6%">Rk</th>
+                    <th width="8%">Gap</th>
+                    <th width="6%">Sts</th>
+                    <th width="8%" style="background:#2c2c2c; color:#aaa;">Wgt%</th>
+                    <th width="10%" style="background:#2c2c2c; color:#aaa;">Buy($)</th>
+                    <th width="8%">MyVal</th>
+                    <th width="10%">Acc($)</th>
+                    <th width="5%">Del</th>
                 </tr>
             </thead>
             <tbody id="tableBody"></tbody>
@@ -248,9 +241,10 @@
     </div>
 
     <div class="btn-area">
-        <button class="btn-calc" onclick="distributeWeights()">⚖️ Balance</button>
-        <button class="btn-invest" onclick="commitInvest()">💰 Invest</button>
-        <button class="btn-refresh" onclick="location.reload()">🔄 Refresh</button>
+        <button class="btn-calc" onclick="distributeWeights()">⚖️ Balance Weights</button>
+        <button class="btn-invest" onclick="commitInvest()">💰 Invest (Add MyVal)</button>
+        <button class="btn-add" onclick="addLocalTicker()">➕ Add Ticker (Local)</button>
+        <button class="btn-refresh" onclick="hardRefresh()">🔄 Reload Data</button>
     </div>
     
     <div class="chart-container">
@@ -259,45 +253,90 @@
     </div>
 
     <div class="footer-note">
-        Updated via GitHub Actions.<br>
-        'Invest' adds MyVal to Acc & clears MyVal.<br>
-        Edit 'portfolio.json' to change Tickers.
+        <strong>Note:</strong> Data comes from GitHub (Daily). <br>
+        Changes made here (Adding Tickers, MyVal) are saved to <strong>this phone only</strong>.<br>
+        To permanently add a ticker for scanning, edit 'portfolio.json' in GitHub.
     </div>
 </div>
 
 <script>
+    // --- Data & Constants ---
     let portfolioData = [];
     let myChart = null; 
 
-    // Color definitions for Chart
+    // Server.js에서 가져온 PEER_GROUPS 정의 (드롭다운 생성용)
+    const SECTOR_LIST = [
+        "Semiconductors", "Consumer Electronics", "Software-Infrastructure", 
+        "Internet Content", "Internet Retail", "Auto Manufacturers", 
+        "Financial", "Drug Manufacturers", "Discount Stores", 
+        "Household & Personal Products", "Beverages - Non-Alcoholic", "Crypto", "Etc"
+    ];
+
+    const GROUP_LIST = ['Agg', 'Bal-Agg', 'Bal', 'Bal-Def', 'Def', 'Crypto', 'Cash'];
+
     const COLOR_MAP = {
-        'Agg': '#ff5252',
-        'Bal-Agg': '#ff9800',
-        'Bal': '#ffeb3b',
-        'Bal-Def': '#2196f3',
-        'Def': '#4caf50',
-        'Crypto': '#9c27b0',
-        'Cash': '#b0bec5',
-        'Unknown': '#757575'
+        'Agg': '#ff5252', 'Bal-Agg': '#ff9800', 'Bal': '#ffeb3b',
+        'Bal-Def': '#2196f3', 'Def': '#4caf50', 'Crypto': '#9c27b0', 'Cash': '#b0bec5', 'Unknown': '#757575'
     };
 
+    // --- Init ---
     async function loadData() {
         try {
+            // 1. Fetch JSON from GitHub (Generated by Python)
             const res = await fetch('portfolio.json?t=' + new Date().getTime());
             if (!res.ok) throw new Error("Network response was not ok");
-            portfolioData = await res.json();
+            const serverData = await res.json();
             
-            loadLocalSettings();
+            // 2. Load LocalStorage (User's phone settings)
+            const localData = loadLocalData();
+
+            // 3. Merge: Server Data (Market Info) + Local Data (User Settings)
+            // 우선 로컬에만 있는 티커(사용자가 폰에서 추가한 것)를 파악
+            const serverTickers = serverData.map(i => i.ticker);
             
+            // 병합된 데이터 생성
+            portfolioData = [];
+
+            // A. 서버에 있는 데이터 처리
+            serverData.forEach(sItem => {
+                const lItem = localData.find(l => l.ticker === sItem.ticker);
+                portfolioData.push({
+                    ...sItem,
+                    // 로컬 설정이 있으면 덮어씌움 (그룹, 섹터, 내돈, 누적액, 비중 등)
+                    group: lItem ? lItem.group : sItem.group,
+                    sector: lItem ? lItem.sector : sItem.sector,
+                    myValue: lItem ? (lItem.myValue || 0) : 0,
+                    invested: lItem ? (lItem.invested || 0) : (sItem.invested || 0),
+                    weight: lItem ? (lItem.weight || sItem.weight) : sItem.weight
+                });
+            });
+
+            // B. 로컬에만 있고 서버엔 없는 데이터 (사용자가 폰에서 추가)
+            localData.forEach(lItem => {
+                if (!serverTickers.includes(lItem.ticker)) {
+                    portfolioData.push({
+                        ...lItem,
+                        status: 'Green', // 스캔 데이터 없으므로 기본값
+                        rank: '-', gap: '-', competitor: 'Local',
+                        myValue: lItem.myValue || 0,
+                        invested: lItem.invested || 0
+                    });
+                }
+            });
+
+            // 4. Render
+            loadLocalSettings(); // Config targets 불러오기
             renderTable();
             checkRealAllocations();
             renderChart();
+
         } catch (e) {
             console.error("Failed to load data", e);
-            document.querySelector('.container').innerHTML += `<p style="color:#ff5252; text-align:center;">Failed to load data.<br>Run GitHub Action first.</p>`;
+            alert("Failed to load portfolio.json. Check internet.");
         }
     }
 
+    // --- Rendering ---
     function renderTable() {
         const tbody = document.getElementById('tableBody');
         tbody.innerHTML = '';
@@ -306,60 +345,89 @@
         portfolioData.forEach((item, index) => {
             const row = document.createElement('tr');
             
-            // Status Badge
+            // Badge & Colors
             let badgeClass = 'bg-green';
             if(item.status === 'Yellow') badgeClass = 'bg-yellow';
             if(item.status === 'Red') badgeClass = 'bg-red';
 
-            // Group Color
-            let groupColor = '#eee';
-            const g = (item.group || 'Agg'); 
-            if(g === 'Agg') groupColor = 'var(--agg-color)';
-            else if(g === 'Bal-Agg') groupColor = 'var(--bal-agg-color)';
-            else if(g === 'Bal') groupColor = 'var(--bal-color)';
-            else if(g === 'Bal-Def') groupColor = 'var(--bal-def-color)';
-            else if(g === 'Def') groupColor = 'var(--def-color)';
-            else if(g === 'Crypto') groupColor = 'var(--crypto-color)';
-            else if(g === 'Cash') groupColor = 'var(--cash-color)';
-
             const wgt = parseFloat(item.weight) || 0;
             const toBuy = totalMoney * (wgt / 100);
-            
-            // Accumulated Value
             const accVal = item.invested || 0;
 
-            // Competitor Name (e.g., "2. AVGO" -> "AVGO")
+            // Comp / Gap
             let compName = '-';
             if (item.competitor && item.competitor !== 'None') {
                 const parts = item.competitor.split('.'); 
                 compName = parts.length > 1 ? parts[1].trim() : item.competitor;
             }
+            const gapStr = (item.gap && item.gap !== '-') ? `${item.gap}%` : '-';
+            const rankStr = item.rank || '-';
 
-            // Gap Formatting
-            const gapStr = item.gap ? `${item.gap}%` : '-';
-            
-            // Rank Color
-            let rankColor = '#aaa'; 
-            if (item.rank > 3) rankColor = '#ff5252';
-
+            // HTML Generation (With Dropdowns)
             row.innerHTML = `
-                <td style="color:${groupColor}; font-weight:bold; font-size:0.8rem;">${g.substring(0,3)}</td>
-                <td style="font-weight:bold;">${item.ticker}</td>
-                <td style="color:#90a4ae; font-size:0.85rem;">${compName}</td>
-                <td class="rank-txt" style="color:${rankColor};">${item.rank || '-'}</td>
-                <td style="color:${item.gap < 10 && item.gap > 0 ? '#ff8a80' : '#69f0ae'}; font-size:0.9rem;">${gapStr}</td>
-                <td><span class="status-badge ${badgeClass}">${item.status.substring(0,1)}</span></td>
+                <td>
+                    <select onchange="updateData(${index}, 'group', this.value); distributeWeights();" style="color:${COLOR_MAP[item.group] || '#fff'}; font-weight:bold;">
+                        ${GROUP_LIST.map(g => `<option value="${g}" ${g === item.group ? 'selected' : ''}>${g.substring(0,3)}</option>`).join('')}
+                    </select>
+                </td>
+                <td><input type="text" value="${item.ticker}" onchange="updateData(${index}, 'ticker', this.value)"></td>
+                <td>
+                    <select onchange="updateData(${index}, 'sector', this.value)" style="width:100px;">
+                        ${SECTOR_LIST.map(s => `<option value="${s}" ${s === item.sector ? 'selected' : ''}>${s}</option>`).join('')}
+                    </select>
+                </td>
+                <td style="color:#90a4ae; font-size:0.8rem;">${compName}</td>
+                <td class="rank-txt" style="color:${item.rank > 3 ? '#ff5252' : '#aaa'};">${rankStr}</td>
+                <td style="color:${parseFloat(item.gap) < 10 ? '#ff8a80' : '#69f0ae'};">${gapStr}</td>
+                <td><span class="status-badge ${badgeClass}">${(item.status || 'G').substring(0,1)}</span></td>
                 <td><input type="number" step="0.1" style="color:#64b5f6;" value="${wgt.toFixed(1)}" onchange="updateWeight(${index}, this.value)"></td>
                 <td class="buy-amt">$${Math.round(toBuy).toLocaleString()}</td>
-                <td><input type="number" value="${item.myValue || 0}" onchange="updateMyValue(${index}, this.value)"></td>
+                <td><input type="number" value="${item.myValue || 0}" onchange="updateData(${index}, 'myValue', this.value)"></td>
                 <td class="acc-amt">$${Math.round(accVal).toLocaleString()}</td>
+                <td><button class="btn-del" onclick="deleteTicker(${index})">X</button></td>
             `;
             tbody.appendChild(row);
         });
     }
 
-    // --- Core Logic ---
-    
+    // --- Logic: Add/Delete/Update ---
+
+    function updateData(index, field, val) {
+        if(field === 'myValue') val = parseFloat(val) || 0;
+        portfolioData[index][field] = val;
+        saveLocalData();
+        if(field === 'group') renderTable(); // 그룹 색상 변경을 위해
+    }
+
+    function updateWeight(index, val) {
+        portfolioData[index].weight = parseFloat(val) || 0;
+        saveLocalData();
+        checkRealAllocations();
+        renderTable(); // Recalculate Buy Amount
+    }
+
+    function addLocalTicker() {
+        portfolioData.push({
+            group: 'Agg',
+            ticker: 'NEW',
+            sector: 'Etc',
+            status: 'Green',
+            rank: '-', gap: '-', competitor: 'Local',
+            weight: 0, myValue: 0, invested: 0
+        });
+        saveLocalData();
+        renderTable();
+    }
+
+    function deleteTicker(index) {
+        if(confirm("Delete this ticker from local view?")) {
+            portfolioData.splice(index, 1);
+            saveLocalData();
+            distributeWeights();
+        }
+    }
+
+    // --- Logic: Weights & Allocations ---
     function distributeWeights() {
         const targets = getTargetSettings();
         saveLocalSettings(); 
@@ -382,101 +450,9 @@
             }
         });
         
+        saveLocalData();
         renderTable(); 
         checkRealAllocations();
-    }
-
-    // Commit 'MyValue' to 'Invested'
-    function commitInvest() {
-        if(!confirm("Add all 'MyVal' amounts to Accumulated Total?")) return;
-
-        let addedTotal = 0;
-        portfolioData.forEach(item => {
-            const currentInput = parseFloat(item.myValue) || 0;
-            if (currentInput > 0) {
-                item.invested = (item.invested || 0) + currentInput;
-                item.myValue = 0;
-                addedTotal += currentInput;
-            }
-        });
-
-        if (addedTotal > 0) {
-            saveLocalSettings();
-            renderTable();
-            renderChart(); 
-            alert(`$${addedTotal.toLocaleString()} added to accumulation.`);
-        } else {
-            alert("No 'MyVal' amounts to invest.");
-        }
-    }
-
-    // Render Pie Chart
-    function renderChart() {
-        const ctx = document.getElementById('portfolioChart').getContext('2d');
-        
-        const labels = [];
-        const dataPoints = [];
-        const backgroundColors = [];
-        let totalAcc = 0;
-
-        const sortedData = [...portfolioData].sort((a, b) => (b.invested || 0) - (a.invested || 0));
-
-        sortedData.forEach(item => {
-            const val = item.invested || 0;
-            if (val > 0) {
-                labels.push(item.ticker);
-                dataPoints.push(val);
-                backgroundColors.push(COLOR_MAP[item.group] || '#757575');
-                totalAcc += val;
-            }
-        });
-
-        if (myChart) myChart.destroy();
-
-        if (totalAcc === 0) return; 
-
-        myChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: labels,
-                datasets: [{
-                    data: dataPoints,
-                    backgroundColor: backgroundColors,
-                    borderWidth: 1,
-                    borderColor: '#1e1e1e'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'right',
-                        labels: { color: '#e0e0e0', boxWidth: 12, font: { size: 10 } }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                const val = context.raw;
-                                const pct = ((val / totalAcc) * 100).toFixed(1);
-                                return ` $${val.toLocaleString()} (${pct}%)`;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    function updateWeight(index, val) {
-        portfolioData[index].weight = parseFloat(val) || 0;
-        renderTable();
-        checkRealAllocations();
-    }
-
-    function updateMyValue(index, val) {
-        portfolioData[index].myValue = parseFloat(val) || 0;
-        saveLocalSettings();
     }
 
     function checkRealAllocations() {
@@ -500,43 +476,105 @@
         }
     }
 
-    function getTargetSettings() {
-        return {
-            Agg: parseFloat(document.getElementById('targetAgg').value) || 0,
-            'Bal-Agg': parseFloat(document.getElementById('targetBalAgg').value) || 0,
-            Bal: parseFloat(document.getElementById('targetBal').value) || 0,
-            'Bal-Def': parseFloat(document.getElementById('targetBalDef').value) || 0,
-            Def: parseFloat(document.getElementById('targetDef').value) || 0,
-            Crypto: parseFloat(document.getElementById('targetCry').value) || 0,
-            Cash: parseFloat(document.getElementById('targetCash').value) || 0
-        };
+    // --- Logic: Invest & Chart ---
+    function commitInvest() {
+        let addedTotal = 0;
+        portfolioData.forEach(item => {
+            const currentInput = parseFloat(item.myValue) || 0;
+            if (currentInput > 0) {
+                item.invested = (item.invested || 0) + currentInput;
+                item.myValue = 0; // Reset Input
+                addedTotal += currentInput;
+            }
+        });
+
+        if (addedTotal > 0) {
+            saveLocalData();
+            renderTable();
+            renderChart();
+            alert(`$${addedTotal.toLocaleString()} invested & added to Accumulation!`);
+        } else {
+            alert("Enter 'MyValue' amounts first.");
+        }
     }
 
-    function updateTotalCheck(targets) {
-        let sum = 0;
-        for (let k in targets) sum += targets[k];
-        const checkEl = document.getElementById('targetSumCheck');
-        checkEl.innerText = sum + '%';
-        checkEl.style.color = Math.abs(sum - 100) < 0.1 ? '#4caf50' : '#ff5252';
+    function renderChart() {
+        const ctx = document.getElementById('portfolioChart').getContext('2d');
+        
+        const labels = [];
+        const dataPoints = [];
+        const backgroundColors = [];
+        let totalAcc = 0;
+
+        // Sort by invested amount
+        const sortedData = [...portfolioData].sort((a, b) => (b.invested || 0) - (a.invested || 0));
+
+        sortedData.forEach(item => {
+            const val = item.invested || 0;
+            if (val > 0) {
+                labels.push(item.ticker);
+                dataPoints.push(val);
+                backgroundColors.push(COLOR_MAP[item.group] || '#757575');
+                totalAcc += val;
+            }
+        });
+
+        if (myChart) myChart.destroy();
+        if (totalAcc === 0) return; 
+
+        myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: dataPoints,
+                    backgroundColor: backgroundColors,
+                    borderWidth: 1,
+                    borderColor: '#1e1e1e'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { color: '#e0e0e0', boxWidth: 10, font: { size: 10 } }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const val = context.raw;
+                                const pct = ((val / totalAcc) * 100).toFixed(1);
+                                return ` $${val.toLocaleString()} (${pct}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // --- Persistence (LocalStorage) ---
+    function saveLocalData() {
+        // Save user's custom changes (Group, Weight, Invested, Tickers)
+        localStorage.setItem('titans_data_mobile', JSON.stringify(portfolioData));
+    }
+
+    function loadLocalData() {
+        const saved = localStorage.getItem('titans_data_mobile');
+        return saved ? JSON.parse(saved) : [];
     }
 
     function saveLocalSettings() {
         const settings = getTargetSettings();
-        const savedData = portfolioData.map(p => ({ 
-            t: p.ticker, 
-            v: p.myValue,       
-            i: p.invested || 0  
-        }));
         const totalInv = document.getElementById('totalInvest').value;
-        
-        localStorage.setItem('titans_settings_mobile', JSON.stringify(settings));
-        localStorage.setItem('titans_values_mobile', JSON.stringify(savedData));
+        localStorage.setItem('titans_config_mobile', JSON.stringify(settings));
         localStorage.setItem('titans_total_mobile', totalInv);
     }
 
     function loadLocalSettings() {
-        const savedSettings = localStorage.getItem('titans_settings_mobile');
-        const savedValues = localStorage.getItem('titans_values_mobile');
+        const savedSettings = localStorage.getItem('titans_config_mobile');
         const savedTotal = localStorage.getItem('titans_total_mobile');
 
         if(savedTotal) document.getElementById('totalInvest').value = savedTotal;
@@ -553,19 +591,35 @@
                 document.getElementById('targetCash').value = s.Cash;
             }
         }
+    }
 
-        if (savedValues) {
-            const vals = JSON.parse(savedValues);
-            portfolioData.forEach(p => {
-                const found = vals.find(v => v.t === p.ticker);
-                if(found) {
-                    p.myValue = found.v;
-                    p.invested = found.i || 0; 
-                }
-            });
+    function getTargetSettings() {
+        return {
+            Agg: parseFloat(document.getElementById('targetAgg').value) || 0,
+            'Bal-Agg': parseFloat(document.getElementById('targetBalAgg').value) || 0,
+            Bal: parseFloat(document.getElementById('targetBal').value) || 0,
+            'Bal-Def': parseFloat(document.getElementById('targetBalDef').value) || 0,
+            Def: parseFloat(document.getElementById('targetDef').value) || 0,
+            Crypto: parseFloat(document.getElementById('targetCry').value) || 0,
+            Cash: parseFloat(document.getElementById('targetCash').value) || 0
+        };
+    }
+    
+    function updateTotalCheck(targets) {
+        let sum = 0;
+        for (let k in targets) sum += targets[k];
+        const checkEl = document.getElementById('targetSumCheck');
+        checkEl.innerText = sum + '%';
+        checkEl.style.color = Math.abs(sum - 100) < 0.1 ? '#4caf50' : '#ff5252';
+    }
+    
+    function hardRefresh() {
+        if(confirm("Reload data from GitHub? Unsaved inputs might be cleared.")) {
+            location.reload();
         }
     }
 
+    // Start
     loadData();
 </script>
 
