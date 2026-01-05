@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>15 Titans Mobile</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             /* Dark Mode Color Palette */
@@ -40,6 +41,7 @@
             padding: 10px; 
             border-radius: 12px; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.5); 
+            padding-bottom: 30px;
         }
 
         h1 { 
@@ -119,7 +121,7 @@
         table { 
             width: 100%; 
             border-collapse: collapse; 
-            min-width: 600px; /* 가로 스크롤 발생 최소 너비 */
+            min-width: 650px; /* 가로 스크롤 발생 최소 너비 증가 */
         }
         thead tr { background-color: #333; color: #eee; }
         th, td { 
@@ -156,12 +158,14 @@
 
         .buy-amt { color: #ff8a80; font-weight: bold; font-size: 1rem; }
         .rank-txt { font-weight: bold; font-size: 1.1rem; }
+        .acc-amt { color: #69f0ae; font-weight: bold; font-size: 1rem; }
 
-        /* Action Buttons (Fixed Bottom or Area) */
+        /* Action Buttons */
         .btn-area { 
             display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 10px; 
+            grid-template-columns: 1fr 1fr 1fr; 
+            gap: 8px; 
+            margin-bottom: 25px;
         }
         button { 
             padding: 12px; 
@@ -173,8 +177,26 @@
             cursor: pointer;
         }
         .btn-calc { background-color: #7b1fa2; }
+        .btn-invest { background-color: #00897b; } /* Teal */
         .btn-refresh { background-color: #1976d2; }
         
+        /* Chart Section */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+            margin-top: 20px;
+            background: #252525;
+            border-radius: 12px;
+            padding: 10px;
+        }
+        .chart-title {
+            text-align: center;
+            color: #ddd;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
         .footer-note { 
             margin-top: 15px; 
             font-size: 0.75rem; 
@@ -214,14 +236,11 @@
                 <tr>
                     <th width="10%">Grp</th>
                     <th width="12%">Ticker</th>
-                    <th width="12%">Comp</th>
-                    <th width="8%">Rk</th>
-                    <th width="10%">Gap</th>
                     <th width="12%">Stat</th>
                     <th width="10%" style="background:#2c2c2c; color:#aaa;">Wgt%</th>
                     <th width="14%" style="background:#2c2c2c; color:#aaa;">Buy($)</th>
                     <th width="12%">MyVal</th>
-                </tr>
+                    <th width="14%">Acc($)</th> </tr>
             </thead>
             <tbody id="tableBody"></tbody>
         </table>
@@ -229,23 +248,40 @@
 
     <div class="btn-area">
         <button class="btn-calc" onclick="distributeWeights()">⚖️ Balance</button>
+        <button class="btn-invest" onclick="commitInvest()">💰 Invest</button>
         <button class="btn-refresh" onclick="location.reload()">🔄 Refresh</button>
     </div>
     
+    <div class="chart-container">
+        <div class="chart-title">Portfolio Accumulation</div>
+        <canvas id="portfolioChart"></canvas>
+    </div>
+
     <div class="footer-note">
         Updated via GitHub Actions.<br>
-        Edit 'portfolio.json' to add tickers.
+        'Invest' adds MyVal to Acc & clears MyVal.<br>
+        Data saved to your device only.
     </div>
 </div>
 
 <script>
     let portfolioData = [];
-    // Category mapping for coloring
-    const CATEGORIES = ['Agg', 'Bal-Agg', 'Bal', 'Bal-Def', 'Def', 'Crypto', 'Cash'];
+    let myChart = null; // Chart instance
+
+    // Color definitions for Chart
+    const COLOR_MAP = {
+        'Agg': '#ff5252',
+        'Bal-Agg': '#ff9800',
+        'Bal': '#ffeb3b',
+        'Bal-Def': '#2196f3',
+        'Def': '#4caf50',
+        'Crypto': '#9c27b0',
+        'Cash': '#b0bec5',
+        'Unknown': '#757575'
+    };
 
     async function loadData() {
         try {
-            // Anti-caching timestamp
             const res = await fetch('portfolio.json?t=' + new Date().getTime());
             if (!res.ok) throw new Error("Network response was not ok");
             portfolioData = await res.json();
@@ -255,6 +291,7 @@
             
             renderTable();
             checkRealAllocations();
+            renderChart();
         } catch (e) {
             console.error("Failed to load data", e);
             document.querySelector('.container').innerHTML += `<p style="color:#ff5252; text-align:center;">Failed to load data.<br>Run GitHub Action first.</p>`;
@@ -274,20 +311,6 @@
             if(item.status === 'Yellow') badgeClass = 'bg-yellow';
             if(item.status === 'Red') badgeClass = 'bg-red';
 
-            // Competitor Name Shortening (e.g., "2. AVGO" -> "AVGO")
-            let compName = '-';
-            if (item.competitor && item.competitor !== 'None') {
-                const parts = item.competitor.split('.'); 
-                compName = parts.length > 1 ? parts[1].trim() : item.competitor;
-            }
-
-            // Gap Formatting
-            const gapStr = item.gap ? `${item.gap}%` : '-';
-            
-            // Rank Color
-            let rankColor = '#aaa'; 
-            if (item.rank > 3) rankColor = '#ff5252';
-
             // Group Color
             let groupColor = '#eee';
             const g = (item.group || 'Agg'); 
@@ -301,17 +324,18 @@
 
             const wgt = parseFloat(item.weight) || 0;
             const toBuy = totalMoney * (wgt / 100);
+            
+            // Accumulated Value (default 0)
+            const accVal = item.invested || 0;
 
             row.innerHTML = `
                 <td style="color:${groupColor}; font-weight:bold; font-size:0.9rem;">${g.substring(0,3)}</td>
                 <td style="font-weight:bold;">${item.ticker}</td>
-                <td style="color:#90a4ae; font-size:0.85rem;">${compName}</td>
-                <td class="rank-txt" style="color:${rankColor};">${item.rank || '-'}</td>
-                <td style="color:${item.gap < 10 && item.gap > 0 ? '#ff8a80' : '#69f0ae'}; font-size:0.9rem;">${gapStr}</td>
                 <td><span class="status-badge ${badgeClass}">${item.status.substring(0,1)}</span></td>
                 <td><input type="number" step="0.1" style="color:#64b5f6;" value="${wgt.toFixed(1)}" onchange="updateWeight(${index}, this.value)"></td>
                 <td class="buy-amt">$${Math.round(toBuy).toLocaleString()}</td>
                 <td><input type="number" value="${item.myValue || 0}" onchange="updateMyValue(${index}, this.value)"></td>
+                <td class="acc-amt">$${Math.round(accVal).toLocaleString()}</td>
             `;
             tbody.appendChild(row);
         });
@@ -325,15 +349,12 @@
         updateTotalCheck(targets);
 
         const counts = { Agg:0, 'Bal-Agg':0, Bal:0, 'Bal-Def':0, Def:0, Crypto:0, Cash:0 };
-        // Count items per group
         portfolioData.forEach(item => { if(counts[item.group] !== undefined) counts[item.group]++; });
 
-        // Calculate active divisor
         let activeSum = 0;
         for (let k in counts) { if (counts[k] > 0) activeSum += targets[k]; }
         const multiplier = activeSum > 0 ? (100 / activeSum) : 0;
 
-        // Apply Weights
         portfolioData.forEach(item => {
             const g = item.group;
             if (counts[g] > 0) {
@@ -348,6 +369,96 @@
         checkRealAllocations();
     }
 
+    // New: Commit 'MyValue' to 'Invested'
+    function commitInvest() {
+        if(!confirm("Add all 'MyVal' amounts to Accumulated Total?")) return;
+
+        let addedTotal = 0;
+        portfolioData.forEach(item => {
+            const currentInput = parseFloat(item.myValue) || 0;
+            if (currentInput > 0) {
+                // Accumulate
+                item.invested = (item.invested || 0) + currentInput;
+                // Reset Input
+                item.myValue = 0;
+                addedTotal += currentInput;
+            }
+        });
+
+        if (addedTotal > 0) {
+            saveLocalSettings();
+            renderTable();
+            renderChart(); // Refresh Chart
+            alert(`$${addedTotal.toLocaleString()} added to accumulation.`);
+        } else {
+            alert("No 'MyVal' amounts to invest.");
+        }
+    }
+
+    // New: Render Pie Chart
+    function renderChart() {
+        const ctx = document.getElementById('portfolioChart').getContext('2d');
+        
+        // Prepare Data
+        const labels = [];
+        const dataPoints = [];
+        const backgroundColors = [];
+        let totalAcc = 0;
+
+        // Sort by value for better visual
+        const sortedData = [...portfolioData].sort((a, b) => (b.invested || 0) - (a.invested || 0));
+
+        sortedData.forEach(item => {
+            const val = item.invested || 0;
+            if (val > 0) {
+                labels.push(item.ticker);
+                dataPoints.push(val);
+                backgroundColors.push(COLOR_MAP[item.group] || '#757575');
+                totalAcc += val;
+            }
+        });
+
+        // Destroy old chart if exists
+        if (myChart) myChart.destroy();
+
+        if (totalAcc === 0) {
+            // Empty State
+            return; 
+        }
+
+        myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: dataPoints,
+                    backgroundColor: backgroundColors,
+                    borderWidth: 1,
+                    borderColor: '#1e1e1e'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { color: '#e0e0e0', boxWidth: 12, font: { size: 10 } }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const val = context.raw;
+                                const pct = ((val / totalAcc) * 100).toFixed(1);
+                                return ` $${val.toLocaleString()} (${pct}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
     function updateWeight(index, val) {
         portfolioData[index].weight = parseFloat(val) || 0;
         renderTable();
@@ -356,6 +467,8 @@
 
     function updateMyValue(index, val) {
         portfolioData[index].myValue = parseFloat(val) || 0;
+        // Don't save full setting here, wait for manual save or implicit logic
+        // But for consistency we save inputs to prevent loss on reload
         saveLocalSettings();
     }
 
@@ -369,13 +482,11 @@
             }
         });
 
-        // Update Config Panel Real%
         for(let k in sums) {
             const elId = 'real' + k.replace('-', '');
             const el = document.getElementById(elId);
             if(el) {
                 el.innerText = sums[k].toFixed(1) + '%';
-                // Tolerance 0.1%
                 if (sums[k] > targets[k] + 0.1) el.classList.add('text-danger');
                 else el.classList.remove('text-danger');
             }
@@ -405,12 +516,16 @@
     // --- Persistence (LocalStorage) ---
     function saveLocalSettings() {
         const settings = getTargetSettings();
-        // Save only My Value entries
-        const myValues = portfolioData.map(p => ({ t: p.ticker, v: p.myValue }));
+        // Save My Value AND Invested Amount
+        const savedData = portfolioData.map(p => ({ 
+            t: p.ticker, 
+            v: p.myValue,       // Current Input
+            i: p.invested || 0  // Accumulated Amount
+        }));
         const totalInv = document.getElementById('totalInvest').value;
         
         localStorage.setItem('titans_settings_mobile', JSON.stringify(settings));
-        localStorage.setItem('titans_values_mobile', JSON.stringify(myValues));
+        localStorage.setItem('titans_values_mobile', JSON.stringify(savedData));
         localStorage.setItem('titans_total_mobile', totalInv);
     }
 
@@ -438,7 +553,11 @@
             const vals = JSON.parse(savedValues);
             portfolioData.forEach(p => {
                 const found = vals.find(v => v.t === p.ticker);
-                if(found) p.myValue = found.v;
+                if(found) {
+                    p.myValue = found.v;
+                    // Load Invested amount (compatible with old version if 'i' missing)
+                    p.invested = found.i || 0; 
+                }
             });
         }
     }
