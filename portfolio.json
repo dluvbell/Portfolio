@@ -8,8 +8,8 @@
     "yellowDate": null,
     "weight": 7.5,
     "rank": 1,
-    "gap": 168.4,
-    "marketCap": "4558.7B",
+    "gap": 178.6,
+    "marketCap": "4604.3B",
     "competitor": "2. TSM"
   },
   {
@@ -21,8 +21,8 @@
     "yellowDate": null,
     "weight": 7.5,
     "rank": 3,
-    "gap": 321.7,
-    "marketCap": "1629.9B",
+    "gap": 326.2,
+    "marketCap": "1628.6B",
     "competitor": "4. MU"
   },
   {
@@ -34,8 +34,8 @@
     "yellowDate": null,
     "weight": 7.5,
     "rank": 3,
-    "gap": 71.1,
-    "marketCap": "428.3B",
+    "gap": 70.9,
+    "marketCap": "433.0B",
     "competitor": "4. CRM"
   },
   {
@@ -47,8 +47,8 @@
     "yellowDate": null,
     "weight": 7.5,
     "rank": 1,
-    "gap": 413.2,
-    "marketCap": "1439.9B",
+    "gap": 416.0,
+    "marketCap": "1434.8B",
     "competitor": "2. TM"
   },
   {
@@ -60,8 +60,8 @@
     "yellowDate": null,
     "weight": 17.5,
     "rank": 1,
-    "gap": 615.3,
-    "marketCap": "2575.6B",
+    "gap": 637.5,
+    "marketCap": "2582.3B",
     "competitor": "2. BABA"
   },
   {
@@ -73,8 +73,8 @@
     "yellowDate": null,
     "weight": 17.5,
     "rank": 1,
-    "gap": 128.7,
-    "marketCap": "3807.3B",
+    "gap": 138.5,
+    "marketCap": "3899.9B",
     "competitor": "2. META"
   },
   {
@@ -86,8 +86,8 @@
     "yellowDate": null,
     "weight": 17.5,
     "rank": 1,
-    "gap": 539.0,
-    "marketCap": "3556.8B",
+    "gap": 548.6,
+    "marketCap": "3593.7B",
     "competitor": "2. ORCL"
   },
   {
@@ -99,8 +99,8 @@
     "yellowDate": null,
     "weight": 17.5,
     "rank": 1,
-    "gap": 2436.5,
-    "marketCap": "3893.5B",
+    "gap": 2479.0,
+    "marketCap": "3863.4B",
     "competitor": "2. SONY"
   }
 ]
