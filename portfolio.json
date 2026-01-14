@@ -2,113 +2,65 @@
   {
     "group": "Agg",
     "ticker": "NVDA",
-    "sector": "Semiconductors",
-    "myValue": 0,
     "status": "Green",
-    "yellowDate": null,
     "weight": 7.5,
-    "rank": 1,
-    "gap": 162.8,
-    "marketCap": "4458.9B",
-    "competitor": "2. TSM",
-    "redDate": null
+    "myValue": 0,
+    "invested": 0
   },
   {
     "group": "Agg",
     "ticker": "AVGO",
-    "sector": "Semiconductors",
-    "myValue": 0,
     "status": "Green",
-    "yellowDate": null,
     "weight": 7.5,
-    "rank": 3,
-    "gap": 329.5,
-    "marketCap": "1611.5B",
-    "competitor": "4. MU",
-    "redDate": null
+    "myValue": 0,
+    "invested": 0
   },
   {
     "group": "Agg",
     "ticker": "PLTR",
-    "sector": "Software-Infrastructure",
-    "myValue": 0,
     "status": "Green",
-    "yellowDate": null,
     "weight": 7.5,
-    "rank": 3,
-    "gap": 86.4,
-    "marketCap": "425.2B",
-    "competitor": "4. CRM",
-    "redDate": null
+    "myValue": 0,
+    "invested": 0
   },
   {
     "group": "Agg",
     "ticker": "TSLA",
-    "sector": "Auto Manufacturers",
-    "myValue": 0,
     "status": "Green",
-    "yellowDate": null,
     "weight": 7.5,
-    "rank": 1,
-    "gap": 390.7,
-    "marketCap": "1460.7B",
-    "competitor": "2. TM",
-    "redDate": null
+    "myValue": 0,
+    "invested": 0
   },
   {
     "group": "Bal",
     "ticker": "AMZN",
-    "sector": "Internet Retail",
-    "myValue": 0,
     "status": "Green",
-    "yellowDate": null,
     "weight": 17.5,
-    "rank": 1,
-    "gap": 523.7,
-    "marketCap": "2529.8B",
-    "competitor": "2. BABA",
-    "redDate": null
+    "myValue": 0,
+    "invested": 0
   },
   {
     "group": "Bal",
     "ticker": "GOOGL",
-    "sector": "Internet Content",
-    "myValue": 0,
     "status": "Green",
-    "yellowDate": null,
     "weight": 17.5,
-    "rank": 1,
-    "gap": 162.2,
-    "marketCap": "4067.7B",
-    "competitor": "2. META",
-    "redDate": null
+    "myValue": 0,
+    "invested": 0
   },
   {
     "group": "Bal",
     "ticker": "MSFT",
-    "sector": "Software-Infrastructure",
-    "myValue": 0,
     "status": "Green",
-    "yellowDate": null,
     "weight": 17.5,
-    "rank": 1,
-    "gap": 513.9,
-    "marketCap": "3414.6B",
-    "competitor": "2. ORCL",
-    "redDate": null
+    "myValue": 0,
+    "invested": 0
   },
   {
     "group": "Bal",
     "ticker": "AAPL",
-    "sector": "Consumer Electronics",
-    "myValue": 0,
     "status": "Green",
-    "yellowDate": null,
     "weight": 17.5,
-    "rank": 1,
-    "gap": 2554.4,
-    "marketCap": "3841.3B",
-    "competitor": "2. SONY",
-    "redDate": null
+    "myValue": 0,
+    "invested": 0
   }
 ]
