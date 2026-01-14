@@ -32,7 +32,7 @@
             color: var(--text-color);
             margin: 0;
             padding: 5px;
-            font-size: 13px; /* 모바일 가독성 최적화 */
+            font-size: 13px; 
         }
 
         .container { 
@@ -121,7 +121,7 @@
         table { 
             width: 100%; 
             border-collapse: collapse; 
-            min-width: 900px; /* 기능 복구로 가로 폭 넓어짐 */
+            min-width: 600px; /* 불필요한 컬럼 삭제로 너비 축소 가능 */
         }
         thead tr { background-color: #333; color: #eee; }
         th, td { 
@@ -142,14 +142,7 @@
             padding: 4px; border-radius: 4px; text-align: center; font-size: 0.9rem; width: 90%;
         }
 
-        /* Badges & Colors */
-        .status-badge { padding: 3px 6px; border-radius: 4px; color: white; font-weight: bold; font-size: 0.7rem; white-space: nowrap;}
-        .bg-green { background-color: #388e3c; }
-        .bg-yellow { background-color: #fbc02d; color: #212121; }
-        .bg-red { background-color: #d32f2f; }
-
         .buy-amt { color: #ff8a80; font-weight: bold; font-size: 0.95rem; }
-        .rank-txt { font-weight: bold; font-size: 1rem; }
         .acc-amt { color: #69f0ae; font-weight: bold; font-size: 0.95rem; }
 
         /* Action Buttons */
@@ -159,8 +152,6 @@
             gap: 8px; 
             margin-bottom: 20px;
         }
-        .btn-full { grid-column: span 2; }
-
         button { 
             padding: 12px; 
             border: none; 
@@ -197,7 +188,7 @@
 <body>
 
 <div class="container">
-    <h1>📱 15 Titans Pro</h1>
+    <h1>📱 15 Titans Pro (Manual)</h1>
 
     <div class="config-panel">
         <div class="config-item"><span class="config-label c-agg">Agg</span><input type="number" id="targetAgg" class="alloc-input" value="30" oninput="distributeWeights()"><span class="config-dynamic" id="realAgg">0%</span></div>
@@ -222,18 +213,14 @@
         <table>
             <thead>
                 <tr>
-                    <th width="10%">Grp</th>
-                    <th width="10%">Ticker</th>
-                    <th width="12%">Sector</th>
-                    <th width="10%">Comp</th>
-                    <th width="6%">Rk</th>
-                    <th width="8%">Gap</th>
-                    <th width="6%">Sts</th>
-                    <th width="8%" style="background:#2c2c2c; color:#aaa;">Wgt%</th>
-                    <th width="10%" style="background:#2c2c2c; color:#aaa;">Buy($)</th>
-                    <th width="8%">MyVal</th>
-                    <th width="10%">Acc($)</th>
-                    <th width="5%">Del</th>
+                    <th width="12%">Grp</th>
+                    <th width="15%">Ticker</th>
+                    <th width="12%">Stat</th>
+                    <th width="12%" style="background:#2c2c2c; color:#aaa;">Wgt%</th>
+                    <th width="15%" style="background:#2c2c2c; color:#aaa;">Buy($)</th>
+                    <th width="12%">MyVal</th>
+                    <th width="15%">Acc($)</th>
+                    <th width="7%">Del</th>
                 </tr>
             </thead>
             <tbody id="tableBody"></tbody>
@@ -243,7 +230,7 @@
     <div class="btn-area">
         <button class="btn-calc" onclick="distributeWeights()">⚖️ Balance Weights</button>
         <button class="btn-invest" onclick="commitInvest()">💰 Invest (Add MyVal)</button>
-        <button class="btn-add" onclick="addLocalTicker()">➕ Add Ticker (Local)</button>
+        <button class="btn-add" onclick="addLocalTicker()">➕ Add Ticker</button>
         <button class="btn-refresh" onclick="hardRefresh()">🔄 Reload Data</button>
     </div>
     
@@ -253,9 +240,9 @@
     </div>
 
     <div class="footer-note">
-        <strong>Note:</strong> Data comes from GitHub (Daily). <br>
-        Changes made here (Adding Tickers, MyVal) are saved to <strong>this phone only</strong>.<br>
-        To permanently add a ticker for scanning, edit 'portfolio.json' in GitHub.
+        <strong>Manual Mode:</strong> Auto-monitoring disabled.<br>
+        Changes made here (Adding Tickers, MyVal, Status) are saved to <strong>this phone only</strong>.<br>
+        To permanently add a ticker, edit 'portfolio.json' in GitHub.
     </div>
 </div>
 
@@ -264,25 +251,23 @@
     let portfolioData = [];
     let myChart = null; 
 
-    // Server.js에서 가져온 PEER_GROUPS 정의 (드롭다운 생성용)
-    const SECTOR_LIST = [
-        "Semiconductors", "Consumer Electronics", "Software-Infrastructure", 
-        "Internet Content", "Internet Retail", "Auto Manufacturers", 
-        "Financial", "Drug Manufacturers", "Discount Stores", 
-        "Household & Personal Products", "Beverages - Non-Alcoholic", "Crypto", "Etc"
-    ];
-
     const GROUP_LIST = ['Agg', 'Bal-Agg', 'Bal', 'Bal-Def', 'Def', 'Crypto', 'Cash'];
+    const STATUS_LIST = ['Green', 'Yellow', 'Red', 'Black 1', 'Black 2'];
 
     const COLOR_MAP = {
         'Agg': '#ff5252', 'Bal-Agg': '#ff9800', 'Bal': '#ffeb3b',
         'Bal-Def': '#2196f3', 'Def': '#4caf50', 'Crypto': '#9c27b0', 'Cash': '#b0bec5', 'Unknown': '#757575'
     };
+    
+    // Status Colors for Dropdown
+    const STAT_COLOR_MAP = {
+        'Green': '#388e3c', 'Yellow': '#fbc02d', 'Red': '#d32f2f', 'Black 1': '#424242', 'Black 2': '#000000'
+    };
 
     // --- Init ---
     async function loadData() {
         try {
-            // 1. Fetch JSON from GitHub (Generated by Python)
+            // 1. Fetch JSON from GitHub (Base Data)
             const res = await fetch('portfolio.json?t=' + new Date().getTime());
             if (!res.ok) throw new Error("Network response was not ok");
             const serverData = await res.json();
@@ -290,42 +275,37 @@
             // 2. Load LocalStorage (User's phone settings)
             const localData = loadLocalData();
 
-            // 3. Merge: Server Data (Market Info) + Local Data (User Settings)
-            // 우선 로컬에만 있는 티커(사용자가 폰에서 추가한 것)를 파악
+            // 3. Merge: Server Data + Local Data
             const serverTickers = serverData.map(i => i.ticker);
-            
-            // 병합된 데이터 생성
             portfolioData = [];
 
-            // A. 서버에 있는 데이터 처리
+            // A. 서버 데이터 병합
             serverData.forEach(sItem => {
                 const lItem = localData.find(l => l.ticker === sItem.ticker);
                 portfolioData.push({
                     ...sItem,
-                    // 로컬 설정이 있으면 덮어씌움 (그룹, 섹터, 내돈, 누적액, 비중 등)
+                    // 로컬 설정 우선 (수동 상태 변경 등)
                     group: lItem ? lItem.group : sItem.group,
-                    sector: lItem ? lItem.sector : sItem.sector,
+                    status: lItem ? (lItem.status || sItem.status) : sItem.status,
                     myValue: lItem ? (lItem.myValue || 0) : 0,
                     invested: lItem ? (lItem.invested || 0) : (sItem.invested || 0),
                     weight: lItem ? (lItem.weight || sItem.weight) : sItem.weight
                 });
             });
 
-            // B. 로컬에만 있고 서버엔 없는 데이터 (사용자가 폰에서 추가)
+            // B. 로컬 전용 데이터 병합
             localData.forEach(lItem => {
                 if (!serverTickers.includes(lItem.ticker)) {
                     portfolioData.push({
                         ...lItem,
-                        status: 'Green', // 스캔 데이터 없으므로 기본값
-                        rank: '-', gap: '-', competitor: 'Local',
+                        status: lItem.status || 'Green',
                         myValue: lItem.myValue || 0,
                         invested: lItem.invested || 0
                     });
                 }
             });
 
-            // 4. Render
-            loadLocalSettings(); // Config targets 불러오기
+            loadLocalSettings();
             renderTable();
             checkRealAllocations();
             renderChart();
@@ -345,25 +325,11 @@
         portfolioData.forEach((item, index) => {
             const row = document.createElement('tr');
             
-            // Badge & Colors
-            let badgeClass = 'bg-green';
-            if(item.status === 'Yellow') badgeClass = 'bg-yellow';
-            if(item.status === 'Red') badgeClass = 'bg-red';
-
             const wgt = parseFloat(item.weight) || 0;
             const toBuy = totalMoney * (wgt / 100);
             const accVal = item.invested || 0;
 
-            // Comp / Gap
-            let compName = '-';
-            if (item.competitor && item.competitor !== 'None') {
-                const parts = item.competitor.split('.'); 
-                compName = parts.length > 1 ? parts[1].trim() : item.competitor;
-            }
-            const gapStr = (item.gap && item.gap !== '-') ? `${item.gap}%` : '-';
-            const rankStr = item.rank || '-';
-
-            // HTML Generation (With Dropdowns)
+            // HTML Generation (Simplified)
             row.innerHTML = `
                 <td>
                     <select onchange="updateData(${index}, 'group', this.value); distributeWeights();" style="color:${COLOR_MAP[item.group] || '#fff'}; font-weight:bold;">
@@ -372,14 +338,10 @@
                 </td>
                 <td><input type="text" value="${item.ticker}" onchange="updateData(${index}, 'ticker', this.value)"></td>
                 <td>
-                    <select onchange="updateData(${index}, 'sector', this.value)" style="width:100px;">
-                        ${SECTOR_LIST.map(s => `<option value="${s}" ${s === item.sector ? 'selected' : ''}>${s}</option>`).join('')}
+                    <select onchange="updateData(${index}, 'status', this.value)" style="color:white; background:${STAT_COLOR_MAP[item.status] || '#333'}; font-weight:bold;">
+                        ${STATUS_LIST.map(s => `<option value="${s}" ${s === item.status ? 'selected' : ''} style="background:${STAT_COLOR_MAP[s]}">${s.substring(0,1)}</option>`).join('')}
                     </select>
                 </td>
-                <td style="color:#90a4ae; font-size:0.8rem;">${compName}</td>
-                <td class="rank-txt" style="color:${item.rank > 3 ? '#ff5252' : '#aaa'};">${rankStr}</td>
-                <td style="color:${parseFloat(item.gap) < 10 ? '#ff8a80' : '#69f0ae'};">${gapStr}</td>
-                <td><span class="status-badge ${badgeClass}">${(item.status || 'G').substring(0,1)}</span></td>
                 <td><input type="number" step="0.1" style="color:#64b5f6;" value="${wgt.toFixed(1)}" onchange="updateWeight(${index}, this.value)"></td>
                 <td class="buy-amt">$${Math.round(toBuy).toLocaleString()}</td>
                 <td><input type="number" value="${item.myValue || 0}" onchange="updateData(${index}, 'myValue', this.value)"></td>
@@ -390,29 +352,27 @@
         });
     }
 
-    // --- Logic: Add/Delete/Update ---
+    // --- Logic ---
 
     function updateData(index, field, val) {
         if(field === 'myValue') val = parseFloat(val) || 0;
         portfolioData[index][field] = val;
         saveLocalData();
-        if(field === 'group') renderTable(); // 그룹 색상 변경을 위해
+        if(field === 'group' || field === 'status') renderTable();
     }
 
     function updateWeight(index, val) {
         portfolioData[index].weight = parseFloat(val) || 0;
         saveLocalData();
         checkRealAllocations();
-        renderTable(); // Recalculate Buy Amount
+        renderTable(); 
     }
 
     function addLocalTicker() {
         portfolioData.push({
             group: 'Agg',
             ticker: 'NEW',
-            sector: 'Etc',
             status: 'Green',
-            rank: '-', gap: '-', competitor: 'Local',
             weight: 0, myValue: 0, invested: 0
         });
         saveLocalData();
@@ -427,7 +387,6 @@
         }
     }
 
-    // --- Logic: Weights & Allocations ---
     function distributeWeights() {
         const targets = getTargetSettings();
         saveLocalSettings(); 
@@ -476,14 +435,13 @@
         }
     }
 
-    // --- Logic: Invest & Chart ---
     function commitInvest() {
         let addedTotal = 0;
         portfolioData.forEach(item => {
             const currentInput = parseFloat(item.myValue) || 0;
             if (currentInput > 0) {
                 item.invested = (item.invested || 0) + currentInput;
-                item.myValue = 0; // Reset Input
+                item.myValue = 0; 
                 addedTotal += currentInput;
             }
         });
@@ -506,7 +464,6 @@
         const backgroundColors = [];
         let totalAcc = 0;
 
-        // Sort by invested amount
         const sortedData = [...portfolioData].sort((a, b) => (b.invested || 0) - (a.invested || 0));
 
         sortedData.forEach(item => {
@@ -555,9 +512,7 @@
         });
     }
 
-    // --- Persistence (LocalStorage) ---
     function saveLocalData() {
-        // Save user's custom changes (Group, Weight, Invested, Tickers)
         localStorage.setItem('titans_data_mobile', JSON.stringify(portfolioData));
     }
 
